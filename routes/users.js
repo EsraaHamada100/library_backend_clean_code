@@ -5,8 +5,6 @@ const { Router } = require('express');
 function createUserRouter(userController) {
 const router = Router();
 
-// Route for logging out
-router.get('/logout', userController.logout.bind(userController));
 
 // Route for getting all users
 router.get('/', userController.getAllUsers.bind(userController));

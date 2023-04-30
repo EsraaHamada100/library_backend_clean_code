@@ -1,24 +1,11 @@
 // user_controller.js
 const crypto = require("crypto");
-const User = require("../models/user.js");
 class UserController {
     constructor(userService, validator) {
         this.userService = userService;
         this.validator = validator;
     }
 
-    async logout(req, res) {
-        try {
-            res.send({
-                message: 'Logout successful',
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({
-                message: 'Failed to log out',
-            });
-        }
-    }
 
     async getAllUsers(req, res) {
         try {
@@ -62,9 +49,8 @@ class UserController {
 
     async saveUser(req, res) {
         try {
-           const user = User.fromJson(req.body);
             // Validate request body
-            this.validator.validateCreateUser(user);
+            this.validator.validateCreateUser(req.body);
         } catch (error) {
             res.status(400).send({
                 message: error.message,
@@ -73,17 +59,15 @@ class UserController {
         }
         try {
             // Get request body
-            // const { name, email, password, phone, active, type } = req.body;
-
-            const user = User.fromJson(req.body);
+            const { name, email, password, phone, active, type } = req.body;
             // Call user service to save new user
             await this.userService.saveUser({
                 name,
                 email,
-                password: password,
+                password,
                 phone,
-                active: active ? active : 0,
-                type: type ? type : 'user',
+                active,
+                type,
             });
 
             res.json({
@@ -154,22 +138,11 @@ class UserController {
         try {
             const { id } = req.params;
 
-            // Get request body
-            const { name, email, password, phone, active, type } = req.body;
-            const userData = this.userService.getUserById(id);
-
             // Validate request body
-            this.validator.validateUpdateUser(req.body);
+            this.validator.validateUpdateUser(id, req.body);
 
             // Call user service to update user
-            await this.userService.updateUser(id, {
-                name ,
-                email,
-                password,
-                phone,
-                active,
-                type,
-            });
+            await this.userService.updateUser(id, req.body);
 
             res.json({
                 message: 'User updated successfully!',

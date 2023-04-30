@@ -74,8 +74,6 @@ class UserService {
   async authenticateUser(email, password) {
     const query = 'SELECT * FROM users WHERE email = ?';
 
-    // // Query users table in MySQL
-    // const [rows] = await database.execute(query, [email]);
     return new Promise((resolve, reject) => {
       this.database.query(query, email, (err, result) => {
         if (err) {
@@ -105,46 +103,74 @@ class UserService {
         });
       });
     });
-
-    // if (!rows.length) {
-    //   return null;
-    // }
-
-    // const user = rows[0];
-
-    // // Extract salt and hash from password field
-    // const [salt, hash] = user.password.split('&');
-
-    // // Compare password with hash
-    // const isValidPassword = bcrypt.compareSync(password, `${salt}&${hash}`);
-
-    // if (!isValidPassword) {
-    //   return null;
-    // }
-
-    // return {
-    //   user_id: user.user_id,
-    //   name: user.name,
-    //   email: user.email,
-    //   phone: user.phone,
-    //   active: user.active,
-    //   type: user.type,
-    // };
   }
 
+  // async updateUser(id, userData) {
+  //   const { salt, hash } = this.hashPassword(userData.password);
+  //   const query =
+  //     'UPDATE users SET name = ?, email = ?, password = ?, phone = ?, active = ?, type = ? WHERE user_id = ?';
+  //   const values = [
+  //     userData.name,
+  //     userData.email,
+  //     `${salt}&${hash}`,
+  //     userData.phone,
+  //     userData.active,
+  //     userData.type,
+  //     id,
+  //   ];
+  //   return new Promise((resolve, reject) => {
+  //     this.database.query(query, values, (err, result) => {
+  //       if (err) {
+  //         reject(err);
+  //         return;
+  //       }
+  //       resolve(result);
+  //     });
+  //   });
+  // }
+
   async updateUser(id, userData) {
-    const { salt, hash } = this.hashPassword(userData.password);
-    const query =
-      'UPDATE users SET name = ?, email = ?, password = ?, phone = ?, active = ?, type = ? WHERE user_id = ?';
-    const values = [
-      userData.name,
-      userData.email,
-      `${salt}&${hash}`,
-      userData.phone,
-      userData.active,
-      userData.type,
-      id,
-    ];
+
+    let query = 'UPDATE users SET';
+    const values = [];
+  
+    if (userData.name) {
+      query += ' name = ?,';
+      values.push(userData.name);
+    }
+  
+    if (userData.email) {
+      query += ' email = ?,';
+      values.push(userData.email);
+    }
+  
+    if (userData.password) {
+      query += ' password = ?,';
+      const { salt, hash } = this.hashPassword(userData.password);
+      values.push(`${salt}&${hash}`);
+    }
+  
+    if (userData.phone) {
+      query += ' phone = ?,';
+      values.push(userData.phone);
+    }
+    // we wrote that because it is boolean that could be 0
+    if (userData.active !== undefined) {
+      query += ' active = ?,';
+      values.push(userData.active);
+    }
+  
+    if (userData.type) {
+      query += ' type = ?,';
+      values.push(userData.type);
+    }
+  
+    // Remove the last comma from the query
+    query = query.slice(0, -1);
+  
+    query += ' WHERE user_id = ?';
+    values.push(id);
+  
     return new Promise((resolve, reject) => {
       this.database.query(query, values, (err, result) => {
         if (err) {
@@ -155,6 +181,7 @@ class UserService {
       });
     });
   }
+  
 
   async deleteUser(id) {
     const query = 'DELETE FROM users WHERE user_id = ?';

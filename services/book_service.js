@@ -134,14 +134,6 @@ class BookService {
 
     updateBook(id, data) {
         return new Promise((resolve, reject) => {
-            // let columns = [];
-            // for (const [key, value] of Object.entries(data)) {
-            //     const string = `${key} = '${value.trim()}'`;
-            //     columns.push(string);
-
-            // }
-            // console.log(columns);
-            // const query = `UPDATE books SET ${columns.join(', ')} WHERE book_id = ${id}`;
             
             let columns = [];
             for (const [key, value] of Object.entries(data)) {

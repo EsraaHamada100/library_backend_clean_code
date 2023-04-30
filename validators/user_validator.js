@@ -1,13 +1,13 @@
 class UserValidator {
 
   validateCreateUser(user) {
-    // const { name, email, phone } = user;
+    const { name, email, phone } = user;
 
-    if (!user.name || !user.email || !user.phone) {
+    if (!name || !email || !phone) {
       throw new Error('Name, email, and phone number are required');
     }
 
-    if (typeof user.name !== 'string' || typeof user.email !== 'string' || typeof user.phone !== 'string') {
+    if (typeof name !== 'string' || typeof email !== 'string' || typeof phone !== 'string') {
       throw new Error('Name, email, and phone number must be strings');
     }
 
@@ -23,29 +23,29 @@ class UserValidator {
 
 
   validateUpdateUser(id, user) {
-    // const { name, email, phone } = user;
+    const { name, email, phone } = user;
 
-    if (user.name && typeof user.name !== 'string') {
+    if (name && typeof name !== 'string') {
       throw new Error('Name must be a string');
     }
 
-    if (user.email && typeof user.email !== 'string') {
+    if (email && typeof email !== 'string') {
       throw new Error('Email must be a string');
     }
 
-    if (user.phone && typeof user.phone !== 'string') {
+    if (phone && typeof phone !== 'string') {
       throw new Error('Phone number must be a string');
     }
 
-    if (user.id && isNaN(Number(user.id))) {
+    if (id && isNaN(Number(id))) {
       throw new Error('User ID must be a number');
     }
 
-    if (user.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       throw new Error('Invalid email address');
     }
 
-    if (user.phone && !/^\+?\d{9,15}$/.test(user.phone)) {
+    if (phone && !/^\+?\d{9,15}$/.test(phone)) {
       throw new Error('Invalid phone number');
     }
   }
