@@ -1,6 +1,6 @@
 // user_controller.js
-
-
+const crypto = require("crypto");
+const User = require("../models/user.js");
 class UserController {
     constructor(userService, validator) {
         this.userService = userService;
@@ -62,8 +62,9 @@ class UserController {
 
     async saveUser(req, res) {
         try {
+           const user = User.fromJson(req.body);
             // Validate request body
-            this.validator.validateCreateUser(req.body);
+            this.validator.validateCreateUser(user);
         } catch (error) {
             res.status(400).send({
                 message: error.message,
@@ -72,15 +73,14 @@ class UserController {
         }
         try {
             // Get request body
-            const { name, email, password, phone, active, type } = req.body;
+            // const { name, email, password, phone, active, type } = req.body;
 
-            const {salt, hash} = this.hashPassword(password);
-
+            const user = User.fromJson(req.body);
             // Call user service to save new user
             await this.userService.saveUser({
                 name,
                 email,
-                password: `${salt}&${hash}`,
+                password: password,
                 phone,
                 active: active ? active : 0,
                 type: type ? type : 'user',
@@ -156,11 +156,10 @@ class UserController {
 
             // Get request body
             const { name, email, password, phone, active, type } = req.body;
-            
             const userData = this.userService.getUserById(id);
 
-            // // Validate request body
-            // this.validator.validateUpdateUser(req.body);
+            // Validate request body
+            this.validator.validateUpdateUser(req.body);
 
             // Call user service to update user
             await this.userService.updateUser(id, {
@@ -206,13 +205,6 @@ class UserController {
             });
         }
     }
-    hashPassword(password) {
-        const salt = crypto.randomBytes(16).toString("hex");
-        const hash = crypto
-          .pbkdf2Sync(password, salt, 1000, 64, "sha256")
-          .toString("hex");
-        return { salt, hash };
-      }
 }
 
 module.exports = UserController;

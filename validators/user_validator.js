@@ -1,13 +1,13 @@
 class UserValidator {
 
-  validateCreateUser(data) {
-    const { name, email, phone } = data;
+  validateCreateUser(user) {
+    // const { name, email, phone } = user;
 
-    if (!name || !email || !phone) {
+    if (!user.name || !user.email || !user.phone) {
       throw new Error('Name, email, and phone number are required');
     }
 
-    if (typeof name !== 'string' || typeof email !== 'string' || typeof phone !== 'string') {
+    if (typeof user.name !== 'string' || typeof user.email !== 'string' || typeof user.phone !== 'string') {
       throw new Error('Name, email, and phone number must be strings');
     }
 
@@ -22,36 +22,36 @@ class UserValidator {
 
 
 
-  validateUpdateUser(id, data) {
-    const { name, email, phone } = data;
+  validateUpdateUser(id, user) {
+    // const { name, email, phone } = user;
 
-    if (name && typeof name !== 'string') {
+    if (user.name && typeof user.name !== 'string') {
       throw new Error('Name must be a string');
     }
 
-    if (email && typeof email !== 'string') {
+    if (user.email && typeof user.email !== 'string') {
       throw new Error('Email must be a string');
     }
 
-    if (phone && typeof phone !== 'string') {
+    if (user.phone && typeof user.phone !== 'string') {
       throw new Error('Phone number must be a string');
     }
 
-    if (id && isNaN(Number(id))) {
+    if (user.id && isNaN(Number(user.id))) {
       throw new Error('User ID must be a number');
     }
 
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (user.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
       throw new Error('Invalid email address');
     }
 
-    if (phone && !/^\+?\d{9,15}$/.test(phone)) {
+    if (user.phone && !/^\+?\d{9,15}$/.test(user.phone)) {
       throw new Error('Invalid phone number');
     }
   }
 
-  validateLogin(data) {
-    const { email, password } = data;
+  validateLogin(loginData) {
+    const { email, password } = loginData;
 
     if (!email || !password) {
       throw new Error('Email, and password are required');
@@ -69,3 +69,4 @@ class UserValidator {
 }
 
 module.exports = UserValidator;
+

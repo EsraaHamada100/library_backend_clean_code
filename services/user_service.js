@@ -50,7 +50,6 @@ class UserService {
   async saveUser(userData) {
     // Generate salt and hash for password
     const { salt, hash } = this.hashPassword(userData.password);
-
     const query =
       'INSERT INTO users (name, email, password, phone, active, type) VALUES (?, ?, ?, ?, ?, ?)';
     const values = [
@@ -64,7 +63,6 @@ class UserService {
     return new Promise((resolve, reject) => {
       this.database.query(query, values, (err, result) => {
         if (err) {
-          console.log(err);
           reject(err);
           return;
         }
@@ -135,7 +133,7 @@ class UserService {
   }
 
   async updateUser(id, userData) {
-    const {salt , hash} = this.hashPassword(userData.password);
+    const { salt, hash } = this.hashPassword(userData.password);
     const query =
       'UPDATE users SET name = ?, email = ?, password = ?, phone = ?, active = ?, type = ? WHERE user_id = ?';
     const values = [
@@ -178,6 +176,7 @@ class UserService {
       .toString("hex");
     return { salt, hash };
   }
+
   verifyPassword(password, salt, hash) {
     const computedHash = crypto
       .pbkdf2Sync(password, salt, 1000, 64, "sha256")
