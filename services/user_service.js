@@ -28,7 +28,8 @@ class UserService {
           reject(err);
           return;
         }
-        resolve(results);
+        const resultsWithoutPassword = results.map(({ password, ...rest }) => rest);
+        resolve(resultsWithoutPassword);
       });
     });
   }
