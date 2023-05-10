@@ -1,3 +1,4 @@
+const ServiceError = require('../core/error/service_Error');
 class ChapterService {
   constructor(database) {
     this.database = database;
@@ -13,8 +14,8 @@ class ChapterService {
     return new Promise((resolve, reject) => {
       this.database.query(query, (err, result)=> {
         if(err){
-          console.error(error);
-          reject(new Error('Failed to get all chapters'));
+          console.ServiceError(ServiceError);
+          reject(new ServiceError('Failed to get all chapters'));
         }
         resolve(result);
       });
@@ -28,7 +29,7 @@ class ChapterService {
     return new Promise((resolve, reject) => {
       this.database.query(query, values, (err, result)=>{
         if(err){
-          reject(new Error('Failed to get chapter by ID'));
+          reject(new ServiceError('Failed to get chapter by ID'));
           return;
         }
         if(result[0]){
@@ -47,10 +48,10 @@ class ChapterService {
     const query = 'INSERT INTO chapters(book_id, chapter_title, description) VALUES(?, ?, ?)';
     const values = [data.book_id, data.chapter_title, data.description]
     return new Promise((resolve, reject) => {
-      ;
+
       this.database.query(query, values, (err, result) => {
         if (err) {
-          reject(err);
+          reject(new ServiceError('Failed to create a new Chapter'));
           return;
         }
         resolve();
@@ -65,7 +66,7 @@ class ChapterService {
     return new Promise((resolve, reject) => {
       this.database.query(query, values, (err) => {
         if (err) {
-          reject(new Error('Failed to update chapter'));
+          reject(new ServiceError('Failed to update chapter'));
           return;
         }
         resolve();
@@ -80,7 +81,7 @@ class ChapterService {
     return new Promise((resolve, reject) => {
       this.database.query(query, values, (err)=>{
         if(err){
-          reject(new Error('Failed to delete chapter'));
+          reject(new ServiceError('Failed to delete chapter'));
           return;
         }
         resolve();

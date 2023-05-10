@@ -1,4 +1,6 @@
 // user_controller.js
+
+const { NOT_FOUND, CREATED } = require('../core/constants/response_code');
 const crypto = require("crypto");
 class UserController {
     constructor(userService, validator) {
@@ -18,9 +20,7 @@ class UserController {
             res.send(users);
         } catch (error) {
             console.error(error);
-            res.status(500).send({
-                message: 'Failed to get all users',
-            });
+            res.status(error.statusCode).send({ message: error.message });
         }
     }
 
@@ -32,7 +32,7 @@ class UserController {
             const user = await this.userService.getUserById(id);
 
             if (!user) {
-                res.status(404).send({
+                res.status(NOT_FOUND).send({
                     message: 'User not found',
                 });
                 return;
@@ -41,23 +41,15 @@ class UserController {
             res.json(user);
         } catch (error) {
             console.error(error);
-            res.status(500).send({
-                message: 'Failed to get user by ID',
-            });
+            res.status(error.statusCode).send({ message: error.message });
         }
     }
 
     async saveUser(req, res) {
+
         try {
             // Validate request body
             this.validator.validateCreateUser(req.body);
-        } catch (error) {
-            res.status(400).send({
-                message: error.message,
-            });
-            return;
-        }
-        try {
             // Get request body
             const { name, email, password, phone, active, type } = req.body;
             // Call user service to save new user
@@ -75,30 +67,16 @@ class UserController {
             });
         } catch (error) {
             console.error(error);
-            if (error.message.includes('Duplicate')) {
-                res.status(409).send({
-                    message: 'The email address is already registered',
-                });
-            } else {
-                res.status(500).send({
-                    message: 'Failed to save the user',
-                });
-            }
+            res.status(error.statusCode).send({ message: error.message });
+
         }
     }
 
     async loginUser(req, res) {
         try {
 
-            try {
-                // validate request body
-                this.validator.validateLogin(req.body);
-            } catch (error) {
-                res.status(400).send({
-                    message: error.message,
-                });
-                return;
-            }
+            // validate request body
+            this.validator.validateLogin(req.body);
 
             // Get email and password from request body
             const { email, password } = req.body;
@@ -128,9 +106,7 @@ class UserController {
             });
         } catch (error) {
             console.error(error);
-            res.status(500).send({
-                message: 'Server Error : Failed to authenticate the user',
-            });
+            res.status(error.statusCode).send({ message: error.message });
         }
     }
 
@@ -149,15 +125,8 @@ class UserController {
             });
         } catch (error) {
             console.error(error);
-            if (error.message.includes('Duplicate')) {
-                res.status(409).send({
-                    message: 'The email address is already registered',
-                });
-            } else {
-                res.status(500).send({
-                    message: 'Failed to update the user',
-                });
-            }
+            res.status(error.statusCode).send({ message: error.message });
+
         }
     }
 
@@ -173,9 +142,7 @@ class UserController {
             });
         } catch (error) {
             console.error(error);
-            res.status(500).send({
-                message: 'Failed to delete the user',
-            });
+            res.status(error.statusCode).send({ message: error.message });
         }
     }
 }

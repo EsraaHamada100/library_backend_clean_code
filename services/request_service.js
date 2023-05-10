@@ -1,3 +1,5 @@
+const ServiceError = require('../core/error/service_error');
+
 class RequestService {
     constructor(database) {
       this.database = database;
@@ -29,7 +31,7 @@ class RequestService {
            ${whereClause}`,
           (err, result, fields) => {
             if (err) {
-              reject(err);
+              reject(new ServiceError('Failed to get the requests'));
               return;
             }
             resolve(result);
@@ -41,7 +43,7 @@ class RequestService {
       return new Promise((resolve, reject) => {
         this.database.query("SELECT * FROM requests WHERE ?", { request_id: id }, (err, result, fields) => {
           if (err) {
-            reject(err);
+            reject(new ServiceError('Failed to get request by Id'));
             return;
           }
           resolve(result[0]);
@@ -57,7 +59,7 @@ class RequestService {
           approval_state: data.approval_state ? data.approval_state : "pending",
         }, (err, result) => {
           if (err) {
-            reject(err);
+            reject(new ServiceError('Failed to create a new request'));
             return;
           }
           resolve(result);
@@ -76,7 +78,7 @@ class RequestService {
           id
         ], (err, result) => {
           if (err) {
-            reject(err);
+            reject(new ServiceError('Failed to update the request'));
             return;
           }
           resolve(result);
@@ -89,7 +91,7 @@ class RequestService {
       return new Promise((resolve, reject) => {
         this.database.query("DELETE FROM requests WHERE ?", { request_id: id }, (err, result) => {
           if (err) {
-            reject(err);
+            reject(new ServiceError('Failed to delete the request'));
             return;
           }
           resolve(result);

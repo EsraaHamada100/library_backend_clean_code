@@ -1,4 +1,7 @@
 // user_service.js
+
+const ServiceError = require('../core/error/service_error');
+const ConflictError = require('../core/error/conflict_error');
 const crypto = require("crypto");
 
 
@@ -25,7 +28,7 @@ class UserService {
       this.database.query(query, (err, results) => {
         if (err) {
           console.log(err);
-          reject(err);
+          reject(new ServiceError('Failed to get the users'));
           return;
         }
         const resultsWithoutPassword = results.map(({ password, ...rest }) => rest);
@@ -40,7 +43,7 @@ class UserService {
     return new Promise((resolve, reject) => {
       this.database.query(query, id, (err, result, fields) => {
         if (err) {
-          reject(err);
+          reject(new ServiceError('Failed to get the user by this id'));
           return;
         }
         resolve(result[0]);
@@ -64,7 +67,12 @@ class UserService {
     return new Promise((resolve, reject) => {
       this.database.query(query, values, (err, result) => {
         if (err) {
-          reject(err);
+          if(err.message.includes('Duplicate')){
+            reject(new ConflictError('The email address is already registered'));
+          }else {
+            reject(new ServiceError('Failed to create a new user'));
+          }
+          
           return;
         }
         resolve(result);
@@ -78,7 +86,8 @@ class UserService {
     return new Promise((resolve, reject) => {
       this.database.query(query, email, (err, result) => {
         if (err) {
-          reject(err);
+          
+          reject(new ServiceError('Failed to authenticate the user'));
           return;
         }
         if (!result[0]) {
@@ -175,7 +184,12 @@ class UserService {
     return new Promise((resolve, reject) => {
       this.database.query(query, values, (err, result) => {
         if (err) {
-          reject(err);
+          if(err.message.includes('Duplicate')) {
+            reject(new ConflictError('The email address is already registered'))
+          }else {
+            reject(new ServiceError('Failed to update the user'));
+          }
+          
           return;
         }
         resolve(result);
@@ -189,7 +203,7 @@ class UserService {
     return new Promise((resolve, reject) => {
       this.database.query(query, id, (err, result) => {
         if (err) {
-          reject(err);
+          reject(new ServiceError('Failed to delete the user'));
           return;
         }
         resolve(result);
@@ -214,3 +228,4 @@ class UserService {
 }
 
 module.exports = UserService;
+

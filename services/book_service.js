@@ -1,3 +1,4 @@
+const ServiceError = require('../core/error/service_error');
 class BookService {
     constructor(database) {
         this.database = database;
@@ -9,7 +10,7 @@ class BookService {
 
             this.database.query(query, (err, result, fields) => {
                 if (err) {
-                    reject(err);
+                    reject(new ServiceError('failed to get authors'));
                     return
                 }
 
@@ -25,7 +26,7 @@ class BookService {
 
             this.database.query(query, (err, result, _) => {
                 if (err) {
-                    reject(err);
+                    reject(new ServiceError('Field to get Fields'));
                     return;
                 }
 
@@ -61,7 +62,7 @@ class BookService {
 
             this.database.query(query, (err, result, fields) => {
                 if (err) {
-                    reject(err);
+                    reject(new ServiceError('failed to get books'));
                     return;
                 }
 
@@ -87,7 +88,7 @@ class BookService {
 
             this.database.query(query, id, (err, result) => {
                 if (err) {
-                    reject(err);
+                    reject(new ServiceError('Failed to get book by Id'));
                     return;
                 }
 
@@ -122,7 +123,7 @@ class BookService {
                 },
                 (err, result) => {
                     if (err) {
-                        reject(err);
+                        reject(new ServiceError('Failed to create a book'));
                         return;
                     }
 
@@ -147,7 +148,7 @@ class BookService {
 
             this.database.query(query,  (err, result) => {
                 if (err) {
-                    reject(err);
+                    reject(new Error('Failed to update the book'));
                     return;
                 }
 
@@ -162,7 +163,7 @@ class BookService {
 
             this.database.query(query, { book_id: id }, (err, result) => {
                 if (err) {
-                    reject(err);
+                    reject(new ServiceError('Failed to delete the book'));
                     return;
                 }
 

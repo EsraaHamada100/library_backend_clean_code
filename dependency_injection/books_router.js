@@ -8,22 +8,23 @@ const BookService = require('../services/book_service.js');
 const BookController = require('../controllers/book_controller.js');
 
 //! dependency injection for books
-const bookService = createBookService(database);
-const bookValidator = createBookValidator();
-const bookController = createBookController(bookService, bookValidator);
+const bookService = new BookService(database);
+const bookValidator = new BookValidator();
+const bookController = new BookController(bookService, bookValidator);
 const booksRouter = booksRouterFactory(bookController);
 
 
-//! create the books classes
-function createBookValidator(){
-    return new BookValidator();
-}
-function createBookService(database) {
-    return new BookService(database);
-}
+// //! create the books classes
+// function createBookValidator() {
+//     return new BookValidator();
+// }
+// function createBookService(database) {
+//     return new BookService(database);
+// }
 
-function createBookController(bookService, bookValidator) {
-    return new BookController(bookService, bookValidator);
-}
+// function createBookController(bookService, bookValidator) {
+//     return new BookController(bookService, bookValidator);
+// }
 
 module.exports = booksRouter;
+

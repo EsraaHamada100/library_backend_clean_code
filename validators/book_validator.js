@@ -1,3 +1,4 @@
+const ValidationError = require('../core/error/validation_error');
 class BookValidator {
     validateCreateBook(data) {
       const errors = [];
@@ -71,7 +72,7 @@ class BookValidator {
       }
   
       if (errors.length > 0) {
-        throw new Error(errors.join(', '));
+        throw new ValidationError(errors.join(', '));
       }
     }
   }

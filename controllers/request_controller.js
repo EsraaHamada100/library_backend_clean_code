@@ -1,3 +1,4 @@
+const {NOT_FOUND, CREATED} = require('../core/constants/response_code');
 class RequestController {
   constructor(requestService, validator) {
     this.requestService = requestService;
@@ -11,7 +12,7 @@ class RequestController {
       res.send(requests);
     } catch (error) {
       console.error(error);
-      res.status(500).send({ message: 'Failed to get requests' });
+      res.status(error.statusCode).send({ message: error.message });
     }
   }
 
@@ -20,13 +21,13 @@ class RequestController {
     try {
       const request = await this.requestService.getRequestById(id);
       if (!request) {
-        res.status(404).send({ message: 'Request not found' });
+        res.status(NOT_FOUND).send({ message: 'Request not found' });
         return;
       }
       res.send(request);
     } catch (error) {
       console.error(error);
-      res.status(500).send({ message: 'Failed to get request' });
+      res.status(error.statusCode).send({ message: error.message });
     }
   }
 
@@ -35,12 +36,12 @@ class RequestController {
     try {
       this.validator.validateCreateRequest(data);
       const result = await this.requestService.createRequest(data);
-      res.send({
+      res.status(CREATED).send({
         message: "Request added successfully",
       });
     } catch (error) {
       console.error(error);
-      res.status(400).send({ message: error.message });
+      res.status(error.statusCode).send({ message: error.message });
     }
   }
 
@@ -53,7 +54,7 @@ class RequestController {
       res.send({ message: 'Request updated successfully' });
     } catch (error) {
       console.error(error);
-      res.status(400).send({ message: error.message });
+      res.status(error.statusCode).send({ message: error.message });
     }
   }
 
@@ -64,7 +65,7 @@ class RequestController {
       res.send({ message: 'Request deleted successfully' });
     } catch (error) {
       console.error(error);
-      res.status(500).send({ message: 'Failed to delete request' });
+      res.status(error.statusCode).send({ message: error.message });
     }
   }
 }

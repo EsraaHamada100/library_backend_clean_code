@@ -1,4 +1,4 @@
-
+const {NOT_FOUND} = require('../core/constants/response_code');
 class BookController {
     
     constructor(bookService, validator) {
@@ -11,8 +11,7 @@ class BookController {
             const authors = await this.bookService.getDistinctAuthors();
             res.send({ authors });
         } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: 'Failed to get authors' });
+            res.status(error.statusCode).send({ message: error.message });
         }
     }
 
@@ -22,8 +21,7 @@ class BookController {
             res.send({ fields });
         } catch (error) {
             console.error(error);
-            res.status(500).send({ message: 'Failed to get fields' });
-        }
+            res.status(error.statusCode).send({ message: error.message });        }
     }
 
     async searchBooks(req, res) {
@@ -35,8 +33,7 @@ class BookController {
             const books = await this.bookService.searchBooks(author, field, bookName);
             res.send({ books });
         } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: 'Failed to search books' });
+            res.status(error.statusCode).send({ message: error.message });
         }
     }
 
@@ -51,11 +48,11 @@ class BookController {
             if(book){
                 res.send(book);
             }else {
-                res.status(404).send({ message: 'Book not found' });
+                res.status(NOT_FOUND).send({ message: 'Book not found' });
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send({ message: 'Failed to get book' });
+            res.status(error.statusCode).send({ message: error.message });
         }
     }
 
@@ -68,7 +65,7 @@ class BookController {
             res.send({ message: 'Book created successfully' });
         } catch (error) {
             console.error(error);
-            res.status(400).send({ message: error.message });
+            res.status(error.statusCode).send({ message: error.message });
         }
     }
 
@@ -82,7 +79,7 @@ class BookController {
             res.send({ message: 'Book updated successfully' });
         } catch (error) {
             console.error(error);
-            res.status(400).send({ message: error.message });
+            res.status(error.statusCode).send({ message: error.message });
         }
     }
 
@@ -94,7 +91,7 @@ class BookController {
             res.send({ message: 'Book deleted successfully' });
         } catch (error) {
             console.error(error);
-            res.status(500).send({ message: 'Failed to delete book' });
+            res.status(error.statusCode).send({ message: error.message });        
         }
     }
 }

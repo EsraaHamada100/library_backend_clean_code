@@ -1,3 +1,4 @@
+const ValidationError = require('../core/error/validation_error')
 class UserValidator {
 
   validateCreateUser(user) {
@@ -8,15 +9,15 @@ class UserValidator {
     }
 
     if (typeof name !== 'string' || typeof email !== 'string' || typeof phone !== 'string') {
-      throw new Error('Name, email, and phone number must be strings');
+      throw new ValidationError('Name, email, and phone number must be strings');
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      throw new Error('Invalid email address');
+      throw new ValidationError('Invalid email address');
     }
 
     if (!/^\+?\d{9,15}$/.test(phone)) {
-      throw new Error('Invalid phone number');
+      throw new ValidationError('Invalid phone number');
     }
   }
 
@@ -26,27 +27,27 @@ class UserValidator {
     const { name, email, phone } = user;
 
     if (name && typeof name !== 'string') {
-      throw new Error('Name must be a string');
+      throw new ValidationError('Name must be a string');
     }
 
     if (email && typeof email !== 'string') {
-      throw new Error('Email must be a string');
+      throw new ValidationError('Email must be a string');
     }
 
     if (phone && typeof phone !== 'string') {
-      throw new Error('Phone number must be a string');
+      throw new ValidationError('Phone number must be a string');
     }
 
     if (id && isNaN(Number(id))) {
-      throw new Error('User ID must be a number');
+      throw new ValidationError('User ID must be a number');
     }
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      throw new Error('Invalid email address');
+      throw new ValidationError('Invalid email address');
     }
 
     if (phone && !/^\+?\d{9,15}$/.test(phone)) {
-      throw new Error('Invalid phone number');
+      throw new ValidationError('Invalid phone number');
     }
   }
 
@@ -54,15 +55,15 @@ class UserValidator {
     const { email, password } = loginData;
 
     if (!email || !password) {
-      throw new Error('Email, and password are required');
+      throw new ValidationError('Email, and password are required');
     }
 
     if (typeof email !== 'string' || typeof password !== 'string') {
-      throw new Error('Email and password must be strings');
+      throw new ValidationError('Email and password must be strings');
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      throw new Error('Invalid email address');
+      throw new ValidationError('Invalid email address');
     }
   }
 
